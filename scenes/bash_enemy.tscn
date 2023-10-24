@@ -21,6 +21,7 @@ _range = 300000.0
 _area = NodePath("Area2D")
 _sprite = NodePath("Sprite2D")
 _speed = 600.0
+_maxHealth = 4.0
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 scale = Vector2(0.25, 0.25)

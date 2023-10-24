@@ -30,8 +30,9 @@ public partial class SimpleProjectile : Sprite2D
 
 		_area.CollisionLayer = collideType switch
 		{
-			CollideType.Player => 1,
-			CollideType.Enemy => 2,
+			CollideType.Player => Constants.PlayerCollisionLayer,
+			CollideType.Enemy => Constants.EnemyCollisionLayer,
+			CollideType.None => Constants.EmptyCollisionLayer,
 			_ => throw new ArgumentOutOfRangeException(nameof(collideType), collideType, null)
 		};
 
@@ -73,14 +74,14 @@ public partial class SimpleProjectile : Sprite2D
 		}
 	}
 	
-	public static SimpleProjectile Spawn(Vector2 globalPos, Vector2 dir, float speed, CollideType collideType, Node spawner)
+	public static SimpleProjectile Spawn(Vector2 globalPos, Vector2 dir, float speed, CollideType collideType)
 	{
 		// load if not loaded
 		_projectilePrefab ??= GD.Load<PackedScene>("res://scenes/projectile.tscn");
 		
 		var node = _projectilePrefab.Instantiate();
 		var projectile = node as SimpleProjectile;
-		spawner.GetNode("%WorldProjectiles")?.AddChild(node);
+		WaveSpawner.ProjectilesParent.AddChild(node);
 		projectile?.Init(globalPos, dir.Normalized(), speed, collideType);
 
 		return projectile;

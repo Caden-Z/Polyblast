@@ -1,9 +1,11 @@
-[gd_scene load_steps=6 format=3 uid="uid://4eibe5igckim"]
+[gd_scene load_steps=8 format=3 uid="uid://4eibe5igckim"]
 
+[ext_resource type="Script" path="res://scripts/WaveSpawner.cs" id="1_eo7e0"]
 [ext_resource type="Script" path="res://scripts/Player.cs" id="1_fs5yf"]
 [ext_resource type="Texture2D" uid="uid://b0x4bmvdktvir" path="res://sprites/triangle.png" id="2_rnidb"]
 [ext_resource type="Script" path="res://scripts/CameraController.cs" id="3_dfk8x"]
 [ext_resource type="PackedScene" uid="uid://brl7gjpotv5h7" path="res://scenes/shooter_enemy.tscn" id="4_0pgac"]
+[ext_resource type="PackedScene" uid="uid://detn6ymbbfylr" path="res://scenes/bash_enemy.tscn" id="4_46pw3"]
 
 [sub_resource type="Environment" id="Environment_qchxs"]
 background_mode = 3
@@ -20,8 +22,13 @@ environment = SubResource("Environment_qchxs")
 unique_name_in_owner = true
 scale = Vector2(0.25, 0.25)
 
+[node name="WaveSpawner" type="Node2D" parent="." node_paths=PackedStringArray("_player", "_projectilesParent")]
+script = ExtResource("1_eo7e0")
+_enemyPrefabs = Array[PackedScene]([ExtResource("4_46pw3"), ExtResource("4_0pgac")])
+_player = NodePath("../Player")
+_projectilesParent = NodePath("../WorldProjectiles")
+
 [node name="Player" type="CharacterBody2D" parent="."]
-position = Vector2(340, 141)
 script = ExtResource("1_fs5yf")
 _speed = 800.0
 
@@ -38,7 +45,3 @@ polygon = PackedVector2Array(0, -47, 55, 48, -55, 48)
 [node name="Camera2D" type="Camera2D" parent="Player"]
 scale = Vector2(0.2, 0.2)
 script = ExtResource("3_dfk8x")
-
-[node name="Shooter Enemy" parent="." node_paths=PackedStringArray("Target") instance=ExtResource("4_0pgac")]
-Target = NodePath("../Player")
-_maxHealth = 2.0

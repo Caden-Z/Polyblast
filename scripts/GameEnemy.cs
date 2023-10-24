@@ -11,9 +11,9 @@ public partial class GameEnemy : GameMovableCharacter
 		Target = target;
 	}
 
-	public override void _Process(double delta)
+	protected override void OnHealthChanged(float newHealth)
 	{
-		if (IsNodeReady() && Health == 0)
+		if (IsNodeReady() && newHealth == 0)
 		{
 			QueueFree();
 		}

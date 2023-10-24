@@ -19,7 +19,12 @@ public partial class Player : GameMovableCharacter
 	{
 		if (Input.IsActionJustPressed("attack"))
 		{
-			SimpleProjectile.Spawn(GlobalPosition, GetGlobalMousePosition() - GlobalPosition, 10, CollideType.Enemy, this);
+			SimpleProjectile.Spawn(GlobalPosition, GetGlobalMousePosition() - GlobalPosition, 10, CollideType.Enemy);
 		}
+	}
+
+	protected override void OnHealthChanged(float newHealth)
+	{
+		
 	}
 }

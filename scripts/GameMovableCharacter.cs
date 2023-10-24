@@ -2,7 +2,7 @@ using Godot;
 
 namespace Polyblast.scripts;
 
-public partial class GameMovableCharacter : CharacterBody2D
+public abstract partial class GameMovableCharacter : CharacterBody2D
 {
 	[Export] private float _speed = 300.0f;
 	[Export] private float _acceleration = 0.05f;
@@ -11,10 +11,15 @@ public partial class GameMovableCharacter : CharacterBody2D
 	[Export] private float _maxHealth;
 
 	private float _health;
+
 	public float Health
 	{
 		get => _health;
-		set => _health = Mathf.Min(Mathf.Max(value, 0), _maxHealth);
+		set
+		{
+			_health = Mathf.Min(Mathf.Max(value, 0), _maxHealth);
+			OnHealthChanged(_health);
+		}
 	}
 
 	public override void _Ready()
@@ -25,7 +30,7 @@ public partial class GameMovableCharacter : CharacterBody2D
 	protected void MoveCharacter(Vector2 dir, float speed = -1, float acceleration = -1, float friction = -1)
 	{
 		var inputVelocity = dir.Normalized() * (speed == -1 ? _speed : speed);
-		
+
 		if (inputVelocity.LengthSquared() > 0)
 			Velocity = Velocity.Lerp(inputVelocity, (acceleration == -1 ? _acceleration : acceleration));
 		else
@@ -33,4 +38,6 @@ public partial class GameMovableCharacter : CharacterBody2D
 
 		MoveAndSlide();
 	}
+
+	protected abstract void OnHealthChanged(float newHealth);
 }

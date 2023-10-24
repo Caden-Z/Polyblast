@@ -28,6 +28,6 @@ public partial class ShooterEnemy : GameEnemy
 		_timeElapsed += delta;
 		if (!(_timeElapsed > _shootInterval)) return;
 		_timeElapsed = 0;
-		SimpleProjectile.Spawn(GlobalPosition, targetDirection, 10, CollideType.Player, this);
+		SimpleProjectile.Spawn(GlobalPosition, targetDirection, 10, CollideType.Player);
 	}
 }
