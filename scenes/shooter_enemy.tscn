@@ -1,0 +1,27 @@
+[gd_scene load_steps=5 format=3 uid="uid://brl7gjpotv5h7"]
+
+[ext_resource type="Script" path="res://scripts/ShooterEnemy.cs" id="1_j316j"]
+[ext_resource type="PackedScene" uid="uid://0svbi44kmnqk" path="res://scenes/projectile.tscn" id="2_31lch"]
+[ext_resource type="Texture2D" uid="uid://dsfyaljngk41r" path="res://sprites/circle.png" id="3_preyi"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_57j2f"]
+radius = 212.116
+
+[node name="Shooter Enemy" type="CharacterBody2D" node_paths=PackedStringArray("_target")]
+modulate = Color(0.788235, 0.054902, 0.054902, 1)
+position = Vector2(376, -146)
+collision_layer = 2
+script = ExtResource("1_j316j")
+_projectile = ExtResource("2_31lch")
+_target = NodePath("")
+_shootInterval = 1.0
+_speed = 500.0
+
+[node name="Sprite" type="Sprite2D" parent="."]
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("3_preyi")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+scale = Vector2(0.25, 0.25)
+shape = SubResource("CircleShape2D_57j2f")
+debug_color = Color(0, 0.6, 0.701961, 0.615686)
