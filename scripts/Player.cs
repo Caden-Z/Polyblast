@@ -14,4 +14,12 @@ public partial class Player : GameMovableCharacter
 			(float)delta * 30
 		);
 	}
+
+	public override void _Process(double delta)
+	{
+		if (Input.IsActionJustPressed("attack"))
+		{
+			SimpleProjectile.Spawn(GlobalPosition, GetGlobalMousePosition() - GlobalPosition, 10, CollideType.Enemy, this);
+		}
+	}
 }

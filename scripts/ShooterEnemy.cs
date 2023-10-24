@@ -11,6 +11,7 @@ public partial class ShooterEnemy : GameEnemy
 
 	public override void _Process(double delta)
 	{
+		base._Process(delta);
 		var targetDirection = Target.GlobalPosition - GlobalPosition;
 		Shoot(targetDirection, (float)delta);
 	}
@@ -26,8 +27,7 @@ public partial class ShooterEnemy : GameEnemy
 	{
 		_timeElapsed += delta;
 		if (!(_timeElapsed > _shootInterval)) return;
-
 		_timeElapsed = 0;
-		SimpleProjectile.Spawn(GlobalPosition, targetDirection, 10, CollideType.Player);
+		SimpleProjectile.Spawn(GlobalPosition, targetDirection, 10, CollideType.Player, this);
 	}
 }

@@ -6,14 +6,16 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_o5pa0"]
 size = Vector2(438.857, 425.789)
 
-[node name="Projectile" type="Sprite2D" node_paths=PackedStringArray("area")]
+[node name="Projectile" type="Sprite2D" node_paths=PackedStringArray("_area")]
 modulate = Color(0.788235, 0.054902, 0.054902, 1)
 scale = Vector2(0.4, 0.1)
 texture = ExtResource("1_insxk")
 script = ExtResource("2_s4ggo")
-area = NodePath("Area2D")
+_area = NodePath("Area2D")
 
 [node name="Area2D" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 position = Vector2(2.81348, 7.62305)

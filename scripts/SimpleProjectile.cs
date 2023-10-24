@@ -4,11 +4,9 @@ using Godot;
 namespace Polyblast.scripts;
 public partial class SimpleProjectile : Sprite2D
 {
-	
 	private static PackedScene _projectilePrefab;
-	private static Node _projectilesParent;
 	
-	[Export] private Area2D area;
+	[Export] private Area2D _area;
 	
 	private Vector2 _dir;
 	private float _speed;
@@ -18,7 +16,7 @@ public partial class SimpleProjectile : Sprite2D
 
 	public override void _Ready()
 	{
-		area.BodyEntered += OnEnterBody;
+		_area.BodyEntered += OnEnterBody;
 	}
 
 	public void Init(Vector2 pos, Vector2 dir, float speed, CollideType collideType)
@@ -28,15 +26,16 @@ public partial class SimpleProjectile : Sprite2D
 		_lifeTime = Mathf.Pow(0.99f, speed) + 1;
 		
 		GlobalPosition = pos;
-		// simple trigonometry
 		Rotation = Mathf.Atan2(dir.Y, dir.X);
 
-		area.CollisionLayer = collideType switch
+		_area.CollisionLayer = collideType switch
 		{
 			CollideType.Player => 1,
 			CollideType.Enemy => 2,
 			_ => throw new ArgumentOutOfRangeException(nameof(collideType), collideType, null)
 		};
+
+		_area.CollisionMask = _area.CollisionLayer;
 	}
 
 	public override void _PhysicsProcess(double delta)
@@ -61,21 +60,27 @@ public partial class SimpleProjectile : Sprite2D
 
 	private void OnEnterBody(Node2D body)
 	{
-		GD.Print("Hit!");
 		QueueFree();
-		CameraController.Shake(36, 0.25f);
+		
+		if (body is Player)
+		{
+			var hitDir = (body.GlobalPosition - GlobalPosition).Normalized();
+			CameraController.Shake(hitDir, GD.RandRange(30, 38));
+		}
+		else if (body is GameMovableCharacter gameMovableCharacter)
+		{
+			gameMovableCharacter.Health -= 1;
+		}
 	}
 	
-	public static SimpleProjectile Spawn(Vector2 globalPos, Vector2 dir, float speed, CollideType collideType)
+	public static SimpleProjectile Spawn(Vector2 globalPos, Vector2 dir, float speed, CollideType collideType, Node spawner)
 	{
 		// load if not loaded
 		_projectilePrefab ??= GD.Load<PackedScene>("res://scenes/projectile.tscn");
-		_projectilesParent ??= (Engine.GetMainLoop() as SceneTree)?.Root.GetChild(0).GetChild(1);
 		
 		var node = _projectilePrefab.Instantiate();
-		_projectilesParent?.AddChild(node);
-
 		var projectile = node as SimpleProjectile;
+		spawner.GetNode("%WorldProjectiles")?.AddChild(node);
 		projectile?.Init(globalPos, dir.Normalized(), speed, collideType);
 
 		return projectile;

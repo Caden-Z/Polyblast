@@ -6,28 +6,27 @@ namespace Polyblast.scripts;
 
 public partial class BashEnemy : GameEnemy
 {
-	[Export] private Node2D _target;
 	[Export] private float _attackInterval;
-	[Export] private float _bashDuration;
-	[Export] private float _bashSpeed;
 	[Export] private float _chargingSpeed;
+	[Export] private float _maxBashLength;
+	[Export] private float _bashSpeed;
+	[Export] private float _range;
 
 	[Export] private Area2D _area;
 	[Export] private Sprite2D _sprite;
 
-	private bool _attacking;
-	private bool _bashing;
 	private float _timeElapsed;
-	private Vector2 _bashedDir;
+	private bool _attacking;
 
 	public override void _Ready()
 	{
-		Target = _target;
+		base._Ready();
 		_area.BodyEntered += OnBodyEnter;
 	}
 
 	public override void _Process(double delta)
 	{
+		base._Process(delta);
 		var dir = Target.GlobalPosition - GlobalPosition;
 		this.TweenRotation(Mathf.Atan2(dir.Y, dir.X), 0.1f).Play();
 	}
@@ -36,10 +35,10 @@ public partial class BashEnemy : GameEnemy
 	{
 		var dir = Target.GlobalPosition - GlobalPosition;
 
-		if (_timeElapsed > _attackInterval && dir.LengthSquared() < 300000)
+		if (_timeElapsed > _attackInterval && dir.LengthSquared() < _range)
 		{
-			_attacking = true;
 			_timeElapsed = 0;
+			_attacking = true;
 
 			_sprite.TweenScaleY(0.15f, 0.75f)
 				.SetEasing(Easing.OutCubic)
@@ -48,34 +47,32 @@ public partial class BashEnemy : GameEnemy
 					_sprite.TweenScaleY(0.25f, 0.1f)
 						.SetEasing(Easing.OutCubic)
 						.Play();
+					
+					_sprite.TweenModulateRgb(Colors.White, 0.1f)
+						.SetEasing(Easing.OutCubic)
+						.Play();
 
-					_bashing = true;
-					_bashedDir = dir;
+					var direction = (Target.GlobalPosition - GlobalPosition).Normalized();
+					
+					this.TweenGlobalPosition(GlobalPosition + direction * _maxBashLength, _bashSpeed)
+						.SetEasing(Easing.OutCubic)
+						.OnComplete(() => _attacking = false)
+						.Play();
 				})
+				.Play();
+			
+			_sprite.TweenModulateRgb(Colors.Crimson, 0.75f)
+				.SetEasing(Easing.OutCubic)
 				.Play();
 		}
 
 		if (_attacking)
 		{
-			if (_bashing)
-			{
-				MoveCharacter(dir, speed: _bashSpeed);
-				_timeElapsed += (float)delta;
-
-				if (_timeElapsed > _bashDuration)
-				{
-					StopAttack();
-				}
-			}
-			else
-			{
-				MoveCharacter(dir, speed: _chargingSpeed);
-			}
-
+			MoveCharacter(dir, speed: _chargingSpeed);
 			return;
 		}
 
-		if (dir.LengthSquared() > 200000)
+		if (dir.LengthSquared() > _range / 1.8f)
 		{
 			MoveCharacter(dir);
 		}
@@ -83,15 +80,10 @@ public partial class BashEnemy : GameEnemy
 		_timeElapsed += (float)delta;
 	}
 
-	private void StopAttack()
-	{
-		_bashing = false;
-		_attacking = false;
-		_timeElapsed = 0;
-	}
-
 	private void OnBodyEnter(Node2D body)
 	{
-		GD.Print("HIT!");
+		if (body is not Player) return;
+		var hitDir = (body.GlobalPosition - GlobalPosition).Normalized();
+		CameraController.Shake(hitDir, GD.RandRange(60, 72));
 	}
 }

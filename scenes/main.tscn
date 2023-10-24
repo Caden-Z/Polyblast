@@ -1,10 +1,9 @@
-[gd_scene load_steps=9 format=3 uid="uid://4eibe5igckim"]
+[gd_scene load_steps=6 format=3 uid="uid://4eibe5igckim"]
 
 [ext_resource type="Script" path="res://scripts/Player.cs" id="1_fs5yf"]
 [ext_resource type="Texture2D" uid="uid://b0x4bmvdktvir" path="res://sprites/triangle.png" id="2_rnidb"]
 [ext_resource type="Script" path="res://scripts/CameraController.cs" id="3_dfk8x"]
-[ext_resource type="Script" path="res://scripts/BashEnemy.cs" id="4_qxcbb"]
-[ext_resource type="Texture2D" uid="uid://tnmcoq2u34o2" path="res://sprites/square.png" id="5_2d5g2"]
+[ext_resource type="PackedScene" uid="uid://brl7gjpotv5h7" path="res://scenes/shooter_enemy.tscn" id="4_0pgac"]
 
 [sub_resource type="Environment" id="Environment_qchxs"]
 background_mode = 3
@@ -12,24 +11,19 @@ glow_enabled = true
 glow_intensity = 4.0
 glow_bloom = 0.8
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_6i5ym"]
-size = Vector2(108, 108)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_4kbto"]
-size = Vector2(122, 120)
-
 [node name="Node2D" type="Node2D"]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_qchxs")
 
-[node name="Projectiles" type="Node2D" parent="."]
+[node name="WorldProjectiles" type="Node2D" parent="."]
+unique_name_in_owner = true
 scale = Vector2(0.25, 0.25)
 
 [node name="Player" type="CharacterBody2D" parent="."]
 position = Vector2(340, 141)
 script = ExtResource("1_fs5yf")
-_speed = 750.0
+_speed = 800.0
 
 [node name="Sprite2D" type="Sprite2D" parent="Player"]
 modulate = Color(0.321569, 0.964706, 1, 1)
@@ -45,26 +39,6 @@ polygon = PackedVector2Array(0, -47, 55, 48, -55, 48)
 scale = Vector2(0.2, 0.2)
 script = ExtResource("3_dfk8x")
 
-[node name="BashEnemy" type="CharacterBody2D" parent="." node_paths=PackedStringArray("_target", "_area", "_sprite")]
-collision_layer = 2
-collision_mask = 2
-script = ExtResource("4_qxcbb")
-_target = NodePath("../Player")
-_attackInterval = 2.0
-_bashDuration = 0.5
-_bashSpeed = 1800.0
-_chargingSpeed = 50.0
-_area = NodePath("Area2D")
-_sprite = NodePath("Sprite2D")
-
-[node name="Sprite2D" type="Sprite2D" parent="BashEnemy"]
-scale = Vector2(0.25, 0.25)
-texture = ExtResource("5_2d5g2")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="BashEnemy"]
-shape = SubResource("RectangleShape2D_6i5ym")
-
-[node name="Area2D" type="Area2D" parent="BashEnemy"]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="BashEnemy/Area2D"]
-shape = SubResource("RectangleShape2D_4kbto")
+[node name="Shooter Enemy" parent="." node_paths=PackedStringArray("Target") instance=ExtResource("4_0pgac")]
+Target = NodePath("../Player")
+_maxHealth = 2.0

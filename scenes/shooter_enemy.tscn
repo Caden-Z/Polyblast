@@ -7,13 +7,13 @@
 [sub_resource type="CircleShape2D" id="CircleShape2D_57j2f"]
 radius = 212.116
 
-[node name="Shooter Enemy" type="CharacterBody2D" node_paths=PackedStringArray("_target")]
+[node name="Shooter Enemy" type="CharacterBody2D"]
 modulate = Color(0.788235, 0.054902, 0.054902, 1)
 position = Vector2(376, -146)
 collision_layer = 2
+collision_mask = 2
 script = ExtResource("1_j316j")
 _projectile = ExtResource("2_31lch")
-_target = NodePath("")
 _shootInterval = 1.0
 _speed = 500.0
 
