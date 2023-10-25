@@ -1,4 +1,3 @@
-using System;
 using Godot;
 
 namespace Polyblast.scripts;
@@ -10,6 +9,7 @@ public partial class SimpleProjectile : Sprite2D
 	
 	private Vector2 _dir;
 	private float _speed;
+	private int _damage;
 
 	private float _lifeTime;
 	private float _timeAlive;
@@ -19,35 +19,39 @@ public partial class SimpleProjectile : Sprite2D
 		_area.BodyEntered += OnEnterBody;
 	}
 
-	public void Init(Vector2 pos, Vector2 dir, float speed, CollideType collideType)
+	public void Init(Vector2 pos, Vector2 dir, float speed, int damage, CollideType collideType, Texture2D texture, Color? color)
 	{
 		_dir = dir;
 		_speed = speed;
+		_damage = damage;
 		_lifeTime = Mathf.Pow(0.99f, speed) + 1;
 		
 		GlobalPosition = pos;
 		Rotation = Mathf.Atan2(dir.Y, dir.X);
-
-		_area.CollisionLayer = collideType switch
-		{
-			CollideType.Player => Constants.PlayerCollisionLayer,
-			CollideType.Enemy => Constants.EnemyCollisionLayer,
-			CollideType.None => Constants.EmptyCollisionLayer,
-			_ => throw new ArgumentOutOfRangeException(nameof(collideType), collideType, null)
-		};
-
+		
+		_area.CollisionLayer = (uint) collideType;
 		_area.CollisionMask = _area.CollisionLayer;
+
+		if (texture != null)
+		{
+			Texture = texture;
+		}
+
+		if (color != null)
+		{
+			Modulate = color.Value;
+		}
 	}
 
 	public override void _PhysicsProcess(double delta)
 	{
 		// move towards the direction
-		Position += _dir * (float)delta * _speed * 400;
+		Position += _dir * (float)delta * _speed * 400 * GameTimeScale.TimeScale;
 	}
 
 	public override void _Process(double delta)
 	{
-		_timeAlive += (float)delta;
+		_timeAlive += (float)delta * GameTimeScale.TimeScale;
 		
 		var modulate = Modulate;
 		modulate.A = 1 - (float)Mathf.Remap(_timeAlive, 0, _lifeTime, 0.1, 1);
@@ -68,13 +72,14 @@ public partial class SimpleProjectile : Sprite2D
 			var hitDir = (body.GlobalPosition - GlobalPosition).Normalized();
 			CameraController.Shake(hitDir, GD.RandRange(30, 38));
 		}
-		else if (body is GameMovableCharacter gameMovableCharacter)
+		
+		if (body is GameMovableCharacter gameMovableCharacter)
 		{
-			gameMovableCharacter.Health -= 1;
+			gameMovableCharacter.Health -= _damage;
 		}
 	}
 	
-	public static SimpleProjectile Spawn(Vector2 globalPos, Vector2 dir, float speed, CollideType collideType)
+	public static SimpleProjectile Spawn(Vector2 globalPos, Vector2 dir, float speed, int damage, CollideType collideType, Texture2D texture = null, Color? color = null)
 	{
 		// load if not loaded
 		_projectilePrefab ??= GD.Load<PackedScene>("res://scenes/projectile.tscn");
@@ -82,7 +87,7 @@ public partial class SimpleProjectile : Sprite2D
 		var node = _projectilePrefab.Instantiate();
 		var projectile = node as SimpleProjectile;
 		WaveSpawner.ProjectilesParent.AddChild(node);
-		projectile?.Init(globalPos, dir.Normalized(), speed, collideType);
+		projectile?.Init(globalPos, dir.Normalized(), speed, damage, collideType, texture, color);
 
 		return projectile;
 	}

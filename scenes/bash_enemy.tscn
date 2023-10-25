@@ -13,7 +13,7 @@ size = Vector2(140, 112)
 collision_layer = 2
 collision_mask = 2
 script = ExtResource("1_ghpgi")
-_attackInterval = 2.0
+_attackInterval = 1.0
 _chargingSpeed = 50.0
 _maxBashLength = 800.0
 _bashSpeed = 0.5
@@ -21,7 +21,7 @@ _range = 300000.0
 _area = NodePath("Area2D")
 _sprite = NodePath("Sprite2D")
 _speed = 600.0
-_maxHealth = 4.0
+_maxHealth = 5
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 scale = Vector2(0.25, 0.25)

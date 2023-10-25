@@ -1,8 +1,8 @@
 namespace Polyblast.scripts;
 
-public enum CollideType
+public enum CollideType : uint
 {
-    Player,
-    Enemy,
-    None
+    Player = 1,
+    Enemy = 2,
+    None = 10
 }

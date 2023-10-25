@@ -1,17 +1,30 @@
-[gd_scene load_steps=8 format=3 uid="uid://4eibe5igckim"]
+[gd_scene load_steps=15 format=3 uid="uid://4eibe5igckim"]
 
 [ext_resource type="Script" path="res://scripts/WaveSpawner.cs" id="1_eo7e0"]
 [ext_resource type="Script" path="res://scripts/Player.cs" id="1_fs5yf"]
+[ext_resource type="Resource" uid="uid://cwywup5ucm5kh" path="res://waves/wave_one.tres" id="2_f8ga0"]
 [ext_resource type="Texture2D" uid="uid://b0x4bmvdktvir" path="res://sprites/triangle.png" id="2_rnidb"]
 [ext_resource type="Script" path="res://scripts/CameraController.cs" id="3_dfk8x"]
-[ext_resource type="PackedScene" uid="uid://brl7gjpotv5h7" path="res://scenes/shooter_enemy.tscn" id="4_0pgac"]
-[ext_resource type="PackedScene" uid="uid://detn6ymbbfylr" path="res://scenes/bash_enemy.tscn" id="4_46pw3"]
+[ext_resource type="Resource" uid="uid://dnvbntu2c6ion" path="res://waves/wave_two.tres" id="3_re1li"]
+[ext_resource type="Texture2D" uid="uid://cek8qvq3fdsdh" path="res://sprites/health.png" id="4_wi431"]
+[ext_resource type="AudioStream" uid="uid://d3s06fti1lhry" path="res://sounds/shoot.wav" id="5_k7y7g"]
+[ext_resource type="AudioStream" uid="uid://vqekxsu23ff7" path="res://sounds/hurt.wav" id="6_btnrj"]
+[ext_resource type="AudioStream" uid="uid://fl778vc7unsu" path="res://sounds/Superposition.mp3" id="8_f2b3v"]
+[ext_resource type="Script" path="res://scripts/HPUpdater.cs" id="8_u6job"]
+[ext_resource type="FontFile" uid="uid://o5ip58cab6g7" path="res://fonts/Exo-VariableFont_wght.ttf" id="12_bq15o"]
 
 [sub_resource type="Environment" id="Environment_qchxs"]
 background_mode = 3
 glow_enabled = true
-glow_intensity = 4.0
-glow_bloom = 0.8
+glow_intensity = 0.25
+glow_strength = 0.95
+glow_bloom = 0.65
+glow_blend_mode = 0
+
+[sub_resource type="LabelSettings" id="LabelSettings_hwf0l"]
+line_spacing = 0.0
+font = ExtResource("12_bq15o")
+font_size = 80
 
 [node name="Node2D" type="Node2D"]
 
@@ -22,15 +35,23 @@ environment = SubResource("Environment_qchxs")
 unique_name_in_owner = true
 scale = Vector2(0.25, 0.25)
 
-[node name="WaveSpawner" type="Node2D" parent="." node_paths=PackedStringArray("_player", "_projectilesParent")]
+[node name="WaveSpawner" type="Node2D" parent="." node_paths=PackedStringArray("_player", "_projectilesParent", "_waveCompleteUI", "_waveCompleteText")]
 script = ExtResource("1_eo7e0")
-_enemyPrefabs = Array[PackedScene]([ExtResource("4_46pw3"), ExtResource("4_0pgac")])
+_waves = Array[Resource]([ExtResource("2_f8ga0"), ExtResource("3_re1li")])
 _player = NodePath("../Player")
 _projectilesParent = NodePath("../WorldProjectiles")
+_waveCompleteUI = NodePath("../CanvasLayer/Control/ColorRect")
+_waveCompleteText = NodePath("../CanvasLayer/Control/ColorRect/Label")
 
-[node name="Player" type="CharacterBody2D" parent="."]
+[node name="Player" type="CharacterBody2D" parent="." node_paths=PackedStringArray("_soundEffectPlayer")]
 script = ExtResource("1_fs5yf")
+_soundEffectPlayer = NodePath("Camera2D/Sound Effect Player")
+_shootSfx = ExtResource("5_k7y7g")
+_hurtSfx = ExtResource("6_btnrj")
+_fireRate = 0.5
+_damage = 1
 _speed = 800.0
+_maxHealth = 3
 
 [node name="Sprite2D" type="Sprite2D" parent="Player"]
 modulate = Color(0.321569, 0.964706, 1, 1)
@@ -45,3 +66,84 @@ polygon = PackedVector2Array(0, -47, 55, 48, -55, 48)
 [node name="Camera2D" type="Camera2D" parent="Player"]
 scale = Vector2(0.2, 0.2)
 script = ExtResource("3_dfk8x")
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="Player/Camera2D"]
+position = Vector2(15, 0)
+scale = Vector2(5, 5)
+stream = ExtResource("8_f2b3v")
+volume_db = -5.0
+autoplay = true
+
+[node name="Sound Effect Player" type="AudioStreamPlayer2D" parent="Player/Camera2D"]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Control" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Control" node_paths=PackedStringArray("_heart1", "_heart2", "_heart3")]
+layout_mode = 1
+offset_left = 51.0
+offset_top = 32.0
+offset_right = 197.0
+offset_bottom = 78.0
+size_flags_vertical = 0
+script = ExtResource("8_u6job")
+_heart1 = NodePath("HP1")
+_heart2 = NodePath("HP2")
+_heart3 = NodePath("HP3")
+
+[node name="HP1" type="TextureRect" parent="CanvasLayer/Control/HBoxContainer"]
+layout_mode = 2
+texture = ExtResource("4_wi431")
+expand_mode = 2
+
+[node name="HP2" type="TextureRect" parent="CanvasLayer/Control/HBoxContainer"]
+layout_mode = 2
+texture = ExtResource("4_wi431")
+expand_mode = 2
+
+[node name="HP3" type="TextureRect" parent="CanvasLayer/Control/HBoxContainer"]
+layout_mode = 2
+texture = ExtResource("4_wi431")
+expand_mode = 2
+
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer/Control"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -75.0
+offset_bottom = 75.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.0352941, 0.0352941, 0.0352941, 0.776471)
+
+[node name="Label" type="Label" parent="CanvasLayer/Control/ColorRect"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -289.0
+offset_top = -54.0
+offset_right = 289.0
+offset_bottom = 54.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(289, 54)
+size_flags_horizontal = 4
+text = "Wave Complete"
+label_settings = SubResource("LabelSettings_hwf0l")
+horizontal_alignment = 1
+vertical_alignment = 1

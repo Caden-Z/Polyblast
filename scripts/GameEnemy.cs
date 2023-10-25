@@ -9,9 +9,10 @@ public partial class GameEnemy : GameMovableCharacter
 	public void Init(Node2D target)
 	{
 		Target = target;
+		Health += Mathf.FloorToInt(WaveSpawner.WaveOn * 0.1f);
 	}
 
-	protected override void OnHealthChanged(float newHealth)
+	protected override void OnHealthChanged(int newHealth)
 	{
 		if (IsNodeReady() && newHealth == 0)
 		{

@@ -22,8 +22,8 @@ public partial class BashEnemy : GameEnemy
 	{
 		base._Ready();
 		_area.BodyEntered += OnBodyEnter;
-		_area.CollisionLayer = Constants.EmptyCollisionLayer;
-		_area.CollisionMask = Constants.EmptyCollisionLayer;
+		_area.CollisionLayer = (uint) CollideType.None;
+		_area.CollisionMask = _area.CollisionLayer;
 	}
 
 	public override void _Process(double delta)
@@ -46,8 +46,10 @@ public partial class BashEnemy : GameEnemy
 				.SetEasing(Easing.OutCubic)
 				.OnComplete(() =>
 				{
-					_area.CollisionLayer = Constants.PlayerCollisionLayer;
-					_area.CollisionMask = Constants.PlayerCollisionLayer;
+					if (!IsInstanceValid(_area)) return;
+					
+					_area.CollisionLayer = (uint) CollideType.Player;
+					_area.CollisionMask = _area.CollisionLayer;
 					
 					_sprite.TweenScaleY(0.25f, 0.1f)
 						.SetEasing(Easing.OutCubic)
@@ -64,8 +66,8 @@ public partial class BashEnemy : GameEnemy
 						.OnComplete(() =>
 						{
 							_attacking = false;
-							_area.CollisionLayer = Constants.EmptyCollisionLayer;
-							_area.CollisionMask = Constants.EmptyCollisionLayer;
+							_area.CollisionLayer = (uint) CollideType.None;
+							_area.CollisionMask = _area.CollisionLayer;
 						})
 						.Play();
 				})
@@ -87,7 +89,7 @@ public partial class BashEnemy : GameEnemy
 			MoveCharacter(dir);
 		}
 		
-		_timeElapsed += (float)delta;
+		_timeElapsed += (float)delta * GameTimeScale.TimeScale;
 	}
 
 	private void OnBodyEnter(Node2D body)
@@ -102,7 +104,7 @@ public partial class BashEnemy : GameEnemy
 		if (body is Player player)
 		{
 			CameraController.Shake(hitDir, GD.RandRange(60, 72), 1.25f);
-			player.Health -= 2;
+			player.Health -= 1 + Mathf.FloorToInt(WaveSpawner.WaveOn / 8f);
 		}
 	}
 }

@@ -8,11 +8,11 @@ public abstract partial class GameMovableCharacter : CharacterBody2D
 	[Export] private float _acceleration = 0.05f;
 	[Export] private float _friction = 0.05f;
 
-	[Export] private float _maxHealth;
+	[Export] private int _maxHealth;
 
-	private float _health;
+	private int _health;
 
-	public float Health
+	public int Health
 	{
 		get => _health;
 		set
@@ -36,8 +36,9 @@ public abstract partial class GameMovableCharacter : CharacterBody2D
 		else
 			Velocity = Velocity.Lerp(Vector2.Zero, (friction == -1 ? _friction : friction));
 
+		Velocity *= GameTimeScale.TimeScale;
 		MoveAndSlide();
 	}
 
-	protected abstract void OnHealthChanged(float newHealth);
+	protected abstract void OnHealthChanged(int newHealth);
 }
