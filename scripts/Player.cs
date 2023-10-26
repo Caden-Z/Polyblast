@@ -2,7 +2,6 @@ using System;
 using Godot;
 using GTweens.Easings;
 using GTweens.Extensions;
-using GTweens.Tweens;
 using GTweensGodot.Extensions;
 
 namespace Polyblast.scripts;
@@ -15,8 +14,8 @@ public partial class Player : GameMovableCharacter
 	[Export] private AudioStream _shootSfx;
 	[Export] private AudioStream _hurtSfx;
 
-	[Export] private float _fireRate;
-	[Export] private int _damage;
+	[Export] public float _fireRate;
+	[Export] public int _damage;
 
 	private float _timeElapsed;
 
@@ -62,6 +61,11 @@ public partial class Player : GameMovableCharacter
 					1f
 				)
 				.SetEasing(Easing.OutCubic)
+				.OnComplete(() =>
+				{
+					GameTimeScale.TimeScale = 1;
+					GetTree().ReloadCurrentScene();
+				})
 				.Play();
 		}
 	}

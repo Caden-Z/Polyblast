@@ -22,7 +22,7 @@ public partial class ShooterEnemy : GameEnemy
 		if (_timeElapsed > _shootInterval)
 		{
 			_timeElapsed = 0;
-			SimpleProjectile.Spawn(GlobalPosition, targetDirection, _projectileSpeed, 1 + Mathf.FloorToInt(EnemySpawner.WaveOn / 6f), CollideType.Player);
+			SimpleProjectile.Spawn(GlobalPosition, targetDirection, _projectileSpeed, 1 + Mathf.FloorToInt(EnemySpawner.Difficulty / 6f), CollideType.Player);
 			_sprite.TweenScaleY(0.4f, 0.1f)
 				.SetEasing(Easing.InSine)
 				.OnComplete(() =>

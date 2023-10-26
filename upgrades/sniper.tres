@@ -1,0 +1,6 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://db8umlg8v8nne"]
+
+[ext_resource type="Script" path="res://scripts/upgrades/SniperUpgrade.cs" id="1_av0wc"]
+
+[resource]
+script = ExtResource("1_av0wc")

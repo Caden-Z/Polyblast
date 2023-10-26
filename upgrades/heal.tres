@@ -1,0 +1,6 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://drsc10new4np2"]
+
+[ext_resource type="Script" path="res://scripts/upgrades/HealUpgrade.cs" id="1_h15we"]
+
+[resource]
+script = ExtResource("1_h15we")

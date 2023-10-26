@@ -1,0 +1,6 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://fhh5c8wbuj1i"]
+
+[ext_resource type="Script" path="res://scripts/upgrades/FireRateUpgrade.cs" id="1_jw6go"]
+
+[resource]
+script = ExtResource("1_jw6go")

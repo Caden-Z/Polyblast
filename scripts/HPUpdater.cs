@@ -1,4 +1,5 @@
 using Godot;
+using GTweensGodot.Extensions;
 
 namespace Polyblast.scripts;
 
@@ -23,11 +24,25 @@ public partial class HPUpdater : HBoxContainer
 		switch (newHealth)
 		{
 			// bad code but works for now, dont do this kids
+			case 3:
+				_heart3.TweenModulateAlpha(1, 0.1f).Play();
+				_heart2.TweenModulateAlpha(1, 0.1f).Play();
+				_heart1.TweenModulateAlpha(1, 0.1f).Play();
+				break;
 			case 2:
-				_heart3.QueueFree();
+				_heart3.TweenModulateAlpha(0, 0.1f).Play();
+				_heart2.TweenModulateAlpha(1, 0.1f).Play();
+				_heart1.TweenModulateAlpha(1, 0.1f).Play();
 				break;
 			case 1:
-				_heart2.QueueFree();
+				_heart3.TweenModulateAlpha(0, 0.1f).Play();
+				_heart2.TweenModulateAlpha(0, 0.1f).Play();
+				_heart1.TweenModulateAlpha(1, 0.1f).Play();
+				break;
+			case 0:
+				_heart3.TweenModulateAlpha(0, 0.1f).Play();
+				_heart2.TweenModulateAlpha(0, 0.1f).Play();
+				_heart1.TweenModulateAlpha(0, 0.1f).Play();
 				break;
 		}
 	}

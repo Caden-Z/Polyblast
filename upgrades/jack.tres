@@ -1,0 +1,6 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://qds5xc5jejmq"]
+
+[ext_resource type="Script" path="res://scripts/upgrades/JackOfAllTradesUpgrade.cs" id="1_6ox5m"]
+
+[resource]
+script = ExtResource("1_6ox5m")

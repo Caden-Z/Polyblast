@@ -4,7 +4,7 @@ namespace Polyblast.scripts;
 
 public abstract partial class GameMovableCharacter : CharacterBody2D
 {
-	[Export] private float _speed = 300.0f;
+	[Export] public float _speed = 300.0f;
 	[Export] private float _acceleration = 0.05f;
 	[Export] private float _friction = 0.05f;
 

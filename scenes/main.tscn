@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://4eibe5igckim"]
+[gd_scene load_steps=27 format=3 uid="uid://4eibe5igckim"]
 
 [ext_resource type="Script" path="res://scripts/Player.cs" id="1_fs5yf"]
 [ext_resource type="Script" path="res://scripts/EnemySpawner.cs" id="1_vebv8"]
@@ -6,12 +6,20 @@
 [ext_resource type="PackedScene" uid="uid://detn6ymbbfylr" path="res://scenes/bash_enemy.tscn" id="2_v1pl6"]
 [ext_resource type="PackedScene" uid="uid://brl7gjpotv5h7" path="res://scenes/shooter_enemy.tscn" id="3_c84sk"]
 [ext_resource type="Script" path="res://scripts/CameraController.cs" id="3_dfk8x"]
+[ext_resource type="Resource" uid="uid://dtq1atao6rnbr" path="res://upgrades/damage.tres" id="4_jldld"]
 [ext_resource type="Texture2D" uid="uid://cek8qvq3fdsdh" path="res://sprites/health.png" id="4_wi431"]
+[ext_resource type="Resource" uid="uid://dlilowx8r4li3" path="res://upgrades/eyeforeye.tres" id="5_6wmtv"]
 [ext_resource type="AudioStream" uid="uid://d3s06fti1lhry" path="res://sounds/shoot.wav" id="5_k7y7g"]
 [ext_resource type="AudioStream" uid="uid://vqekxsu23ff7" path="res://sounds/hurt.wav" id="6_btnrj"]
+[ext_resource type="Resource" uid="uid://fhh5c8wbuj1i" path="res://upgrades/firerate.tres" id="6_qnc4j"]
+[ext_resource type="Resource" uid="uid://drsc10new4np2" path="res://upgrades/heal.tres" id="7_w1nr4"]
+[ext_resource type="Resource" uid="uid://qds5xc5jejmq" path="res://upgrades/jack.tres" id="8_3nfkg"]
 [ext_resource type="AudioStream" uid="uid://fl778vc7unsu" path="res://sounds/Superposition.mp3" id="8_f2b3v"]
 [ext_resource type="Script" path="res://scripts/HPUpdater.cs" id="8_u6job"]
+[ext_resource type="Resource" uid="uid://db8umlg8v8nne" path="res://upgrades/sniper.tres" id="9_11yef"]
+[ext_resource type="Resource" uid="uid://ctjcwgs7i4pcx" path="res://upgrades/speed.tres" id="10_dmijl"]
 [ext_resource type="FontFile" uid="uid://o5ip58cab6g7" path="res://fonts/Exo-VariableFont_wght.ttf" id="12_bq15o"]
+[ext_resource type="Script" path="res://scripts/UpgradeButton.cs" id="13_o4573"]
 
 [sub_resource type="Environment" id="Environment_qchxs"]
 background_mode = 3
@@ -26,6 +34,21 @@ line_spacing = 0.0
 font = ExtResource("12_bq15o")
 font_size = 80
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_upk86"]
+bg_color = Color(0.0352941, 0.0352941, 0.0352941, 0.776471)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_72kh0"]
+bg_color = Color(0.0352941, 0.0352941, 0.0352941, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_j0pon"]
+font = ExtResource("12_bq15o")
+font_size = 64
+
+[sub_resource type="LabelSettings" id="LabelSettings_yl184"]
+line_spacing = 0.0
+font = ExtResource("12_bq15o")
+font_size = 32
+
 [node name="Node2D" type="Node2D"]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -35,13 +58,18 @@ environment = SubResource("Environment_qchxs")
 unique_name_in_owner = true
 scale = Vector2(0.25, 0.25)
 
-[node name="EnemySpawner" type="Node2D" parent="." node_paths=PackedStringArray("_player", "_projectilesParent", "_waveCompleteUI", "_waveCompleteText")]
+[node name="EnemySpawner" type="Node2D" parent="." node_paths=PackedStringArray("_player", "_projectilesParent", "_waveCompleteUI", "_waveCompleteText", "_upgradeUI", "_upgrade1", "_upgrade2", "_upgrade3")]
 script = ExtResource("1_vebv8")
 _enemyTypes = Array[PackedScene]([ExtResource("2_v1pl6"), ExtResource("3_c84sk")])
 _player = NodePath("../Player")
 _projectilesParent = NodePath("../WorldProjectiles")
 _waveCompleteUI = NodePath("../CanvasLayer/Control/ColorRect")
 _waveCompleteText = NodePath("../CanvasLayer/Control/ColorRect/Label")
+_upgradeUI = NodePath("../CanvasLayer/Control/Upgrades")
+_upgrade1 = NodePath("../CanvasLayer/Control/Upgrades/Upgrade")
+_upgrade2 = NodePath("../CanvasLayer/Control/Upgrades/Upgrade2")
+_upgrade3 = NodePath("../CanvasLayer/Control/Upgrades/Upgrade3")
+_upgradesAvailable = Array[Resource]([ExtResource("4_jldld"), ExtResource("5_6wmtv"), ExtResource("6_qnc4j"), ExtResource("7_w1nr4"), ExtResource("8_3nfkg"), ExtResource("9_11yef"), ExtResource("10_dmijl")])
 
 [node name="Player" type="CharacterBody2D" parent="." node_paths=PackedStringArray("_soundEffectPlayer")]
 script = ExtResource("1_fs5yf")
@@ -88,7 +116,7 @@ grow_vertical = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Control" node_paths=PackedStringArray("_heart1", "_heart2", "_heart3")]
+[node name="Hearts" type="HBoxContainer" parent="CanvasLayer/Control" node_paths=PackedStringArray("_heart1", "_heart2", "_heart3")]
 layout_mode = 1
 offset_left = 51.0
 offset_top = 32.0
@@ -100,17 +128,17 @@ _heart1 = NodePath("HP1")
 _heart2 = NodePath("HP2")
 _heart3 = NodePath("HP3")
 
-[node name="HP1" type="TextureRect" parent="CanvasLayer/Control/HBoxContainer"]
+[node name="HP1" type="TextureRect" parent="CanvasLayer/Control/Hearts"]
 layout_mode = 2
 texture = ExtResource("4_wi431")
 expand_mode = 2
 
-[node name="HP2" type="TextureRect" parent="CanvasLayer/Control/HBoxContainer"]
+[node name="HP2" type="TextureRect" parent="CanvasLayer/Control/Hearts"]
 layout_mode = 2
 texture = ExtResource("4_wi431")
 expand_mode = 2
 
-[node name="HP3" type="TextureRect" parent="CanvasLayer/Control/HBoxContainer"]
+[node name="HP3" type="TextureRect" parent="CanvasLayer/Control/Hearts"]
 layout_mode = 2
 texture = ExtResource("4_wi431")
 expand_mode = 2
@@ -147,3 +175,109 @@ text = "Wave Complete"
 label_settings = SubResource("LabelSettings_hwf0l")
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="Upgrades" type="HBoxContainer" parent="CanvasLayer/Control"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -200.0
+offset_bottom = 200.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="Upgrade" type="Button" parent="CanvasLayer/Control/Upgrades" node_paths=PackedStringArray("_title", "_description")]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = SubResource("StyleBoxFlat_upk86")
+theme_override_styles/hover = SubResource("StyleBoxFlat_72kh0")
+script = ExtResource("13_o4573")
+_title = NodePath("VBoxContainer/Title")
+_description = NodePath("VBoxContainer/Description")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Control/Upgrades/Upgrade"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="Title" type="Label" parent="CanvasLayer/Control/Upgrades/Upgrade/VBoxContainer"]
+layout_mode = 2
+text = "Title"
+label_settings = SubResource("LabelSettings_j0pon")
+horizontal_alignment = 1
+
+[node name="Description" type="Label" parent="CanvasLayer/Control/Upgrades/Upgrade/VBoxContainer"]
+layout_mode = 2
+text = "multiline texttttttttttttttttttttttttttttttttttttttttttttttttttt"
+label_settings = SubResource("LabelSettings_yl184")
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Upgrade2" type="Button" parent="CanvasLayer/Control/Upgrades" node_paths=PackedStringArray("_title", "_description")]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = SubResource("StyleBoxFlat_upk86")
+theme_override_styles/hover = SubResource("StyleBoxFlat_72kh0")
+script = ExtResource("13_o4573")
+_title = NodePath("VBoxContainer/Title")
+_description = NodePath("VBoxContainer/Description")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Control/Upgrades/Upgrade2"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="Title" type="Label" parent="CanvasLayer/Control/Upgrades/Upgrade2/VBoxContainer"]
+layout_mode = 2
+text = "Title"
+label_settings = SubResource("LabelSettings_j0pon")
+horizontal_alignment = 1
+
+[node name="Description" type="Label" parent="CanvasLayer/Control/Upgrades/Upgrade2/VBoxContainer"]
+layout_mode = 2
+text = "multiline texttttttttttttttttttttttttttttttttttttttttttttttttttt"
+label_settings = SubResource("LabelSettings_yl184")
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Upgrade3" type="Button" parent="CanvasLayer/Control/Upgrades" node_paths=PackedStringArray("_title", "_description")]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = SubResource("StyleBoxFlat_upk86")
+theme_override_styles/hover = SubResource("StyleBoxFlat_72kh0")
+script = ExtResource("13_o4573")
+_title = NodePath("VBoxContainer/Title")
+_description = NodePath("VBoxContainer/Description")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Control/Upgrades/Upgrade3"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="Title" type="Label" parent="CanvasLayer/Control/Upgrades/Upgrade3/VBoxContainer"]
+layout_mode = 2
+text = "Title"
+label_settings = SubResource("LabelSettings_j0pon")
+horizontal_alignment = 1
+
+[node name="Description" type="Label" parent="CanvasLayer/Control/Upgrades/Upgrade3/VBoxContainer"]
+layout_mode = 2
+text = "multiline texttttttttttttttttttttttttttttttttttttttttttttttttttt"
+label_settings = SubResource("LabelSettings_yl184")
+horizontal_alignment = 1
+autowrap_mode = 3
