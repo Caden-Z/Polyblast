@@ -1,9 +1,0 @@
-[gd_resource type="Resource" load_steps=3 format=3 uid="uid://cwywup5ucm5kh"]
-
-[ext_resource type="Script" path="res://scripts/EnemyWave.cs" id="1_1cmni"]
-[ext_resource type="PackedScene" uid="uid://brl7gjpotv5h7" path="res://scenes/shooter_enemy.tscn" id="1_obdoo"]
-
-[resource]
-script = ExtResource("1_1cmni")
-_enemies = Array[PackedScene]([ExtResource("1_obdoo"), ExtResource("1_obdoo"), ExtResource("1_obdoo"), ExtResource("1_obdoo"), ExtResource("1_obdoo")])
-_spawnOverSeconds = 1.0

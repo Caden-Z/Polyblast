@@ -1,11 +1,11 @@
 [gd_scene load_steps=15 format=3 uid="uid://4eibe5igckim"]
 
-[ext_resource type="Script" path="res://scripts/WaveSpawner.cs" id="1_eo7e0"]
 [ext_resource type="Script" path="res://scripts/Player.cs" id="1_fs5yf"]
-[ext_resource type="Resource" uid="uid://cwywup5ucm5kh" path="res://waves/wave_one.tres" id="2_f8ga0"]
+[ext_resource type="Script" path="res://scripts/EnemySpawner.cs" id="1_vebv8"]
 [ext_resource type="Texture2D" uid="uid://b0x4bmvdktvir" path="res://sprites/triangle.png" id="2_rnidb"]
+[ext_resource type="PackedScene" uid="uid://detn6ymbbfylr" path="res://scenes/bash_enemy.tscn" id="2_v1pl6"]
+[ext_resource type="PackedScene" uid="uid://brl7gjpotv5h7" path="res://scenes/shooter_enemy.tscn" id="3_c84sk"]
 [ext_resource type="Script" path="res://scripts/CameraController.cs" id="3_dfk8x"]
-[ext_resource type="Resource" uid="uid://dnvbntu2c6ion" path="res://waves/wave_two.tres" id="3_re1li"]
 [ext_resource type="Texture2D" uid="uid://cek8qvq3fdsdh" path="res://sprites/health.png" id="4_wi431"]
 [ext_resource type="AudioStream" uid="uid://d3s06fti1lhry" path="res://sounds/shoot.wav" id="5_k7y7g"]
 [ext_resource type="AudioStream" uid="uid://vqekxsu23ff7" path="res://sounds/hurt.wav" id="6_btnrj"]
@@ -35,9 +35,9 @@ environment = SubResource("Environment_qchxs")
 unique_name_in_owner = true
 scale = Vector2(0.25, 0.25)
 
-[node name="WaveSpawner" type="Node2D" parent="." node_paths=PackedStringArray("_player", "_projectilesParent", "_waveCompleteUI", "_waveCompleteText")]
-script = ExtResource("1_eo7e0")
-_waves = Array[Resource]([ExtResource("2_f8ga0"), ExtResource("3_re1li")])
+[node name="EnemySpawner" type="Node2D" parent="." node_paths=PackedStringArray("_player", "_projectilesParent", "_waveCompleteUI", "_waveCompleteText")]
+script = ExtResource("1_vebv8")
+_enemyTypes = Array[PackedScene]([ExtResource("2_v1pl6"), ExtResource("3_c84sk")])
 _player = NodePath("../Player")
 _projectilesParent = NodePath("../WorldProjectiles")
 _waveCompleteUI = NodePath("../CanvasLayer/Control/ColorRect")

@@ -66,6 +66,7 @@ public partial class BashEnemy : GameEnemy
 						.OnComplete(() =>
 						{
 							_attacking = false;
+							if (!IsInstanceValid(_area)) return;
 							_area.CollisionLayer = (uint) CollideType.None;
 							_area.CollisionMask = _area.CollisionLayer;
 						})
@@ -104,7 +105,7 @@ public partial class BashEnemy : GameEnemy
 		if (body is Player player)
 		{
 			CameraController.Shake(hitDir, GD.RandRange(60, 72), 1.25f);
-			player.Health -= 1 + Mathf.FloorToInt(WaveSpawner.WaveOn / 8f);
+			player.Health -= 1 + Mathf.FloorToInt(EnemySpawner.WaveOn / 8f);
 		}
 	}
 }

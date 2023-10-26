@@ -4,14 +4,10 @@ using Godot;
 
 namespace Polyblast.scripts;
 
-public partial class EnemyWave : Resource
+public class EnemyWave
 {
-	[Export] private PackedScene[] _enemies;
-	[Export] private float _spawnOverSeconds;
-
-	public EnemyWave() : this(Array.Empty<PackedScene>(), 0)
-	{
-	}
+	private PackedScene[] _enemies;
+	private float _spawnOverSeconds;
 
 	public EnemyWave(PackedScene[] enemies, float spawnOverSeconds)
 	{

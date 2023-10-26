@@ -86,7 +86,7 @@ public partial class SimpleProjectile : Sprite2D
 		
 		var node = _projectilePrefab.Instantiate();
 		var projectile = node as SimpleProjectile;
-		WaveSpawner.ProjectilesParent.AddChild(node);
+		EnemySpawner.ProjectilesParent.AddChild(node);
 		projectile?.Init(globalPos, dir.Normalized(), speed, damage, collideType, texture, color);
 
 		return projectile;

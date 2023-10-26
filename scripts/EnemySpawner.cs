@@ -1,5 +1,4 @@
-using System.Net.Sockets;
-using System.Threading.Tasks;
+using System;
 using Godot;
 using GTweens.Builders;
 using GTweens.Easings;
@@ -7,11 +6,11 @@ using GTweensGodot.Extensions;
 
 namespace Polyblast.scripts;
 
-public partial class WaveSpawner : Node2D
+public partial class EnemySpawner : Node2D
 {
 	public static Node2D ProjectilesParent { get; private set; }
 
-	[Export] private EnemyWave[] _waves;
+	[Export] private PackedScene[] _enemyTypes;
 	[Export] private Node2D _player;
 	[Export] private Node2D _projectilesParent;
 
@@ -41,9 +40,18 @@ public partial class WaveSpawner : Node2D
 		}
 
 		if (!_readyForNextWave) return;
-		if (WaveOn >= _waves.Length) return;
 
-		_waves[WaveOn].Spawn(_player, this);
+		var enemies = new PackedScene[GD.RandRange(Mathf.Max(WaveOn + 1, 1), Mathf.Max(WaveOn + 2, WaveOn * 2))];
+		GD.Print("Enemies Count: " + enemies.Length);
+		
+		for (var i = 0; i < enemies.Length; i++)
+		{
+			enemies[i] = _enemyTypes[GD.RandRange(0, _enemyTypes.Length - 1)];
+		}
+		
+		new EnemyWave(enemies, -MathF.Log10(10 * (WaveOn + 1)) + 3)
+			.Spawn(_player, this);
+		
 		WaveOn++;
 		_justStarted = false;
 	}
@@ -79,5 +87,6 @@ public partial class WaveSpawner : Node2D
 
 		_waveCompleteText.Position = ogPos;
 		_readyForNextWave = true;
+		GD.Print($"Starting wave: {WaveOn}");
 	}
 }
